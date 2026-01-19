@@ -1,0 +1,144 @@
+.cart-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+.cart-container h1 {
+  color: #1e3a8a;
+  margin-bottom: 30px;
+  font-size: 28px;
+}
+
+.empty-cart {
+  background: white;
+  padding: 60px 20px;
+  text-align: center;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.empty-cart p {
+  font-size: 20px;
+  color: #64748b;
+  margin-bottom: 30px;
+}
+
+.empty-cart .btn {
+  padding: 12px 30px;
+}
+
+.cart-content {
+  display: grid;
+  grid-template-columns: 1fr 350px;
+  gap: 30px;
+}
+
+.cart-items {
+  background: white;
+  border-radius: 12px;
+  overflow: hidden;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+}
+
+.cart-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.cart-table thead {
+  background: linear-gradient(135deg, #1e3a8a 0%, #3b82f6 100%);
+  color: white;
+}
+
+.cart-table th {
+  padding: 15px;
+  text-align: left;
+  font-weight: 600;
+}
+
+.cart-table td {
+  padding: 15px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.cart-table tbody tr:hover {
+  background-color: #f8fafc;
+}
+
+.cart-table .btn {
+  padding: 6px 12px;
+  font-size: 13px;
+}
+
+.cart-summary {
+  background: white;
+  border-radius: 12px;
+  padding: 20px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+  height: fit-content;
+  position: sticky;
+  top: 20px;
+}
+
+.cart-summary h2 {
+  color: #1e3a8a;
+  font-size: 20px;
+  margin-bottom: 20px;
+  border-bottom: 2px solid #e2e8f0;
+  padding-bottom: 15px;
+}
+
+.summary-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 10px 0;
+  color: #555;
+  font-size: 14px;
+}
+
+.summary-total {
+  display: flex;
+  justify-content: space-between;
+  padding: 15px 0;
+  border-top: 2px solid #e2e8f0;
+  border-bottom: 2px solid #e2e8f0;
+  margin: 15px 0;
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e3a8a;
+}
+
+.proceed-btn {
+  width: 100%;
+  padding: 12px !important;
+  margin-bottom: 10px;
+}
+
+.cart-summary .btn {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+.cart-summary .btn:last-child {
+  margin-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .cart-content {
+    grid-template-columns: 1fr;
+  }
+
+  .cart-table {
+    font-size: 14px;
+  }
+
+  .cart-table th,
+  .cart-table td {
+    padding: 10px;
+  }
+
+  .cart-summary {
+    position: static;
+  }
+}
