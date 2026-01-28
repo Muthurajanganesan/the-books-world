@@ -26,8 +26,9 @@ public class AuthController {
             SignUpResponse response = userService.signUp(request);
             return ResponseEntity.status(HttpStatus.CREATED).body(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-                    .body(new SignUpResponse(e.getMessage(), null, null));
+            SignUpResponse errorResponse = new SignUpResponse();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(errorResponse);
         }
     }
 
@@ -49,8 +50,9 @@ public class AuthController {
             LoginResponse response = userService.login(request);
             return ResponseEntity.ok(response);
         } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
-                    .body(new LoginResponse(e.getMessage(), null, null, null));
+            LoginResponse errorResponse = new LoginResponse();
+            errorResponse.setMessage(e.getMessage());
+            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(errorResponse);
         }
     }
 

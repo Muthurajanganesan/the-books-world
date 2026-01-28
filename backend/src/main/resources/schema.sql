@@ -39,8 +39,8 @@ CREATE TABLE IF NOT EXISTS CART (
     user_id BIGINT NOT NULL,
     book_id BIGINT,
     quantity INTEGER,
-    created_at TIMESTAMP,
-    updated_at TIMESTAMP,
+    total_price DECIMAL(10, 2),
+    added_at TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES USERS(id)
 );
 
@@ -50,6 +50,7 @@ CREATE TABLE IF NOT EXISTS ORDERS (
     user_id BIGINT NOT NULL,
     total_amount DECIMAL(10, 2),
     order_status VARCHAR(50),
+    payment_status VARCHAR(50),
     created_at TIMESTAMP,
     updated_at TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES USERS(id)
@@ -72,8 +73,9 @@ CREATE TABLE IF NOT EXISTS PAYMENTS (
     id BIGINT PRIMARY KEY AUTO_INCREMENT,
     user_id BIGINT NOT NULL,
     order_id BIGINT,
+    stripe_payment_id VARCHAR(255),
     amount DECIMAL(10, 2),
-    payment_method VARCHAR(50),
+    currency VARCHAR(10),
     payment_status VARCHAR(50),
     created_at TIMESTAMP,
     updated_at TIMESTAMP,

@@ -17,7 +17,7 @@ export const validatePhoneNumber = (phone) => {
 
 export const getPasswordStrength = (password) => {
   let strength = 0;
-  
+
   if (password.length >= 8) strength++;
   if (/[a-z]/.test(password)) strength++;
   if (/[A-Z]/.test(password)) strength++;
@@ -47,21 +47,79 @@ export const formatCurrency = (amount) => {
 };
 
 export const isAuthenticated = () => {
-  return !!localStorage.getItem('authToken');
+  const localToken = localStorage.getItem('authToken');
+  const sessionToken = sessionStorage.getItem('authToken');
+  const isAuth = !!(localToken || sessionToken);
+  
+  console.log('isAuthenticated check:', {
+    localStorage: !!localToken,
+    sessionStorage: !!sessionToken,
+    result: isAuth,
+  });
+  
+  return isAuth;
 };
 
 export const getUserIdFromStorage = () => {
-  return localStorage.getItem('userId');
+  const localId = localStorage.getItem('userId');
+  const sessionId = sessionStorage.getItem('userId');
+  const userId = localId || sessionId;
+  
+  console.log('getUserIdFromStorage:', {
+    localStorage: localId,
+    sessionStorage: sessionId,
+    result: userId,
+  });
+  
+  return userId;
 };
 
-export const saveAuthData = (token, userId, email) => {
-  localStorage.setItem('authToken', token);
-  localStorage.setItem('userId', userId);
-  localStorage.setItem('userEmail', email);
+export const getAuthToken = () => {
+  const localToken = localStorage.getItem('authToken');
+  const sessionToken = sessionStorage.getItem('authToken');
+  const token = localToken || sessionToken;
+  
+  console.log('getAuthToken:', {
+    localStorage: !!localToken,
+    sessionStorage: !!sessionToken,
+    result: !!token,
+  });
+  
+  return token;
+};
+
+export const saveAuthData = (token, userId, email, rememberMe) => {
+  // Always save to session storage (temporary session data)
+  sessionStorage.setItem('authToken', token);
+  sessionStorage.setItem('userId', userId);
+  sessionStorage.setItem('userEmail', email);
+  
+  console.log('SessionStorage saved:', {
+    authToken: sessionStorage.getItem('authToken'),
+    userId: sessionStorage.getItem('userId'),
+    userEmail: sessionStorage.getItem('userEmail'),
+  });
+  
+  // Also save to local storage if Remember Me is checked (persistent data)
+  if (rememberMe) {
+    localStorage.setItem('authToken', token);
+    localStorage.setItem('userId', userId);
+    localStorage.setItem('userEmail', email);
+    console.log('LocalStorage also saved (Remember Me checked)');
+  } else {
+    // Clear local storage if Remember Me is unchecked
+    localStorage.removeItem('authToken');
+    localStorage.removeItem('userId');
+    localStorage.removeItem('userEmail');
+  }
 };
 
 export const clearAuthData = () => {
   localStorage.removeItem('authToken');
   localStorage.removeItem('userId');
   localStorage.removeItem('userEmail');
+  sessionStorage.removeItem('authToken');
+  sessionStorage.removeItem('userId');
+  sessionStorage.removeItem('userEmail');
 };
+

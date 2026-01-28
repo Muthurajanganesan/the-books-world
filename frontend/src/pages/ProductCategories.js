@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { bookAPI } from '../utils/api';
 import { formatCurrency, getUserIdFromStorage } from '../utils/validation';
 import { cartAPI } from '../utils/api';
 import './ProductCategories.css';
 
 function ProductCategories() {
+  const navigate = useNavigate();
   const userId = getUserIdFromStorage();
   const [selectedCategory, setSelectedCategory] = useState('');
   const [books, setBooks] = useState([]);
@@ -73,7 +75,11 @@ function ProductCategories() {
           ) : books.length > 0 ? (
             <div className="books-display-grid">
               {books.map((book) => (
-                <div key={book.id} className="book-card">
+                <div
+                  key={book.id}
+                  className="book-card clickable"
+                  onClick={() => navigate(`/book/${book.id}`)}
+                >
                   <div className="book-image">
                     <img src={book.imageUrl} alt={book.title} />
                     {book.onSale && <span className="sale-badge">ON SALE</span>}
@@ -96,10 +102,12 @@ function ProductCategories() {
                       )}
                     </div>
                     <button
-                      className={`btn btn-primary add-cart-btn ${
-                        addedItems.has(book.id) ? 'added' : ''
-                      }`}
-                      onClick={() => handleAddToCart(book)}
+                      className={`btn btn-primary add-cart-btn ${addedItems.has(book.id) ? 'added' : ''
+                        }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleAddToCart(book);
+                      }}
                     >
                       {addedItems.has(book.id) ? '✓ Added' : '🛒 Add to Cart'}
                     </button>

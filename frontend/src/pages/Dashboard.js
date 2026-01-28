@@ -9,6 +9,7 @@ import ReturnReplacement from './ReturnReplacement';
 import ContactUs from './ContactUs';
 import TermsConditions from './TermsConditions';
 import Cart from './Cart';
+import PaymentSuccess from './PaymentSuccess';
 import './Dashboard.css';
 
 function Dashboard() {
@@ -25,6 +26,7 @@ function Dashboard() {
           <Route path="/contact" element={<ContactUs />} />
           <Route path="/terms-conditions" element={<TermsConditions />} />
           <Route path="/cart" element={<Cart />} />
+          <Route path="/payment-success" element={<PaymentSuccess />} />
         </Routes>
       </div>
     </div>

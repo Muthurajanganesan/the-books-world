@@ -8,8 +8,7 @@ function ReturnReplacement() {
         <h1>Return & Replacement</h1>
       </div>
       <div className="page-content">
-        <p>Return and replacement information coming soon...</p>
-        <p>Our team is working on creating a comprehensive return and replacement policy.</p>
+        <p>No producs returned by user</p>
       </div>
     </div>
   );

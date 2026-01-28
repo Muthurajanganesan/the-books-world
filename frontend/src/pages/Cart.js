@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { cartAPI, orderAPI } from '../utils/api';
+import { cartAPI, orderAPI, paymentAPI } from '../utils/api';
 import { formatCurrency, getUserIdFromStorage } from '../utils/validation';
 import './Cart.css';
 
@@ -10,6 +10,7 @@ function Cart() {
   const [cartItems, setCartItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [processing, setProcessing] = useState(false);
+  const [showPayment, setShowPayment] = useState(false);
 
   const fetchCartItems = useCallback(async () => {
     try {
@@ -17,10 +18,22 @@ function Cart() {
       setCartItems(response.data || []);
     } catch (error) {
       console.error('Error fetching cart:', error);
+      // Fallback to local storage if API fails
+      const cachedCart = localStorage.getItem(`cart_${userId}`);
+      if (cachedCart) {
+        setCartItems(JSON.parse(cachedCart));
+      }
     } finally {
       setLoading(false);
     }
   }, [userId]);
+
+  // Persist cart to local storage whenever it changes
+  useEffect(() => {
+    if (userId && cartItems.length > 0) {
+      localStorage.setItem(`cart_${userId}`, JSON.stringify(cartItems));
+    }
+  }, [cartItems, userId]);
 
   useEffect(() => {
     if (userId) {
@@ -62,14 +75,19 @@ function Cart() {
       const amount = orderResponse.data.amount;
 
       // Redirect to payment gateway (Stripe)
-      // For now, we'll show an alert with payment info
-      alert(
-        `Payment Gateway Integration\n\nOrder ID: ${orderId}\nAmount: ${formatCurrency(amount)}\n\nStripe integration will handle the payment.`
-      );
+      const sessionResponse = await paymentAPI.createCheckoutSession(orderId, amount, userId);
 
-      // After payment, clear cart
-      await cartAPI.clearCart(userId);
-      fetchCartItems();
+      if (sessionResponse.data && sessionResponse.data.url) {
+        window.location.href = sessionResponse.data.url;
+      } else {
+        alert('Failed to initiate payment');
+      }
+
+      // Note: Cart clearing will happen after successful payment on the success page
+      // or we can keep it here if we want to clear it assuming they go to pay. 
+      // Better to clear it on success, but for now let's leave it till success page handles it.
+      // Actually, standard practice: keep cart until paid. 
+      // So I will REMOVE the clearCart call here.
     } catch (error) {
       alert(error.response?.data?.error || 'Failed to process order');
     } finally {
@@ -150,13 +168,23 @@ function Cart() {
               <span>{formatCurrency(totalAmount)}</span>
             </div>
 
-            <button
-              className="btn btn-primary proceed-btn"
-              onClick={handleProceedToPayment}
-              disabled={processing}
-            >
-              {processing ? 'Processing...' : 'Proceed to Payment'}
-            </button>
+            {showPayment ? (
+              <button
+                className="btn btn-primary proceed-btn"
+                onClick={handleProceedToPayment}
+                disabled={processing}
+              >
+                {processing ? 'Processing...' : 'Proceed to Pay'}
+              </button>
+            ) : (
+              <button
+                className="btn btn-primary proceed-btn"
+                onClick={() => setShowPayment(true)}
+                disabled={processing}
+              >
+                Finish Cart
+              </button>
+            )}
             <button
               className="btn btn-secondary"
               onClick={() => navigate('/')}

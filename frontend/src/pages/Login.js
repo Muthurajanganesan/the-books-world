@@ -11,6 +11,7 @@ function Login({ setIsLoggedIn }) {
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
+  const [rememberMe, setRememberMe] = useState(false);
 
   const validateForm = () => {
     const newErrors = {};
@@ -40,11 +41,11 @@ function Login({ setIsLoggedIn }) {
     try {
       const response = await authAPI.login(email, password);
       const { token, userId } = response.data;
-      
+
       // Save authentication data
-      saveAuthData(token, userId, email);
+      saveAuthData(token, userId, email, rememberMe);
       setIsLoggedIn(true);
-      
+
       // Redirect to dashboard
       navigate('/');
     } catch (error) {
@@ -100,6 +101,17 @@ function Login({ setIsLoggedIn }) {
               </button>
             </div>
             {errors.password && <div className="form-error">{errors.password}</div>}
+          </div>
+
+          <div className="form-group checkbox-group">
+            <label className="remember-me-label">
+              <input
+                type="checkbox"
+                checked={rememberMe}
+                onChange={(e) => setRememberMe(e.target.checked)}
+              />
+              <span className="checkbox-text">Remember Me</span>
+            </label>
           </div>
 
           <button

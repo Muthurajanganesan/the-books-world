@@ -1,9 +1,11 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { bookAPI, cartAPI } from '../utils/api';
 import { formatCurrency, getUserIdFromStorage } from '../utils/validation';
 import './Home.css';
 
 function Home() {
+  const navigate = useNavigate();
   const userId = getUserIdFromStorage();
   const [books, setBooks] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -38,6 +40,7 @@ function Home() {
       await cartAPI.addToCart(userId, book.id, 1);
       setAddedItems(new Set([...addedItems, book.id]));
       alert(`${book.title} added to cart!`);
+      navigate('/cart');
     } catch (error) {
       const errorMessage = error.response?.data?.error || error.message || 'Failed to add item to cart';
       alert(errorMessage);
@@ -84,7 +87,11 @@ function Home() {
       ) : (
         <div className="books-grid">
           {books.map((book) => (
-            <div key={book.id} className="book-card">
+            <div
+              key={book.id}
+              className="book-card clickable"
+              onClick={() => navigate(`/book/${book.id}`)}
+            >
               <div className="book-image">
                 <img src={book.imageUrl} alt={book.title} />
                 {book.onSale && <span className="sale-badge">ON SALE</span>}
@@ -107,10 +114,12 @@ function Home() {
                   )}
                 </div>
                 <button
-                  className={`btn btn-primary add-cart-btn ${
-                    addedItems.has(book.id) ? 'added' : ''
-                  }`}
-                  onClick={() => handleAddToCart(book)}
+                  className={`btn btn-primary add-cart-btn ${addedItems.has(book.id) ? 'added' : ''
+                    }`}
+                  onClick={(e) => {
+                    e.stopPropagation(); // Prevent navigation when clicking add to cart
+                    handleAddToCart(book);
+                  }}
                 >
                   {addedItems.has(book.id) ? '✓ Added' : '🛒 Add to Cart'}
                 </button>

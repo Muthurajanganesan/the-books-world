@@ -12,7 +12,8 @@ const api = axios.create({
 // Add token to requests
 api.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('authToken');
+    // Check both storages via helper
+    const token = localStorage.getItem('authToken') || sessionStorage.getItem('authToken');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
     }
@@ -66,6 +67,8 @@ export const paymentAPI = {
         amount,
       },
     }),
+  createCheckoutSession: (orderId, amount, userId) =>
+    api.post('/payments/create-checkout-session', { orderId, amount, userId }),
 };
 
 export default api;
